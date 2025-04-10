@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Finanzas Personales</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      padding: 20px;
+    }
+
+    h1, h2 {
+      text-align: center;
+      color: #333;
+    }
+
+    form {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      max-width: 600px;
+      margin: 0 auto 20px auto;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background: #007bff;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+      margin-top: 15px;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    .movimiento {
+      background: #fff;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      margin: 10px auto;
+      max-width: 600px;
+    }
+
+    .ingreso {
+      border-left: 6px solid #28a745;
+    }
+
+    .gasto {
+      border-left: 6px solid #dc3545;
+    }
+
+    .saldo {
+      text-align: center;
+      font-size: 1.4em;
+      margin-top: 20px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>💰 Finanzas Personales</h1>
+
+  <form id="form-movimiento">
+    <input type="text" id="descripcion" placeholder="Descripción del movimiento" required>
+    <input type="number" id="cantidad" placeholder="Cantidad" step="0.01" required>
+    <select id="tipo">
+      <option value="ingreso">Ingreso</option>
+      <option value="gasto">Gasto</option>
+    </select>
+    <button type="submit">Agregar Movimiento</button>
+  </form>
+
+  <div class="saldo">
+    <strong>Saldo actual: </strong><span id="saldo">$0.00</span>
+  </div>
+
+  <div id="lista-movimientos"></div>
+
+  <script>
+    const form = document.getElementById('form-movimiento');
+    const lista = document.getElementById('lista-movimientos');
+    const saldoEl = document.getElementById('saldo');
+
+    let movimientos = [];
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const descripcion = document.getElementById('descripcion').value.trim();
+      const cantidad = parseFloat(document.getElementById('cantidad').value);
+      const tipo = document.getElementById('tipo').value;
+
+      if (!descripcion || isNaN(cantidad)) return;
+
+      movimientos.push({ descripcion, cantidad, tipo });
+      form.reset();
+      renderizarMovimientos();
+    });
+
+    function renderizarMovimientos() {
+      lista.innerHTML = "";
+      let saldo = 0;
+
+      movimientos.forEach(mov => {
+        const div = document.createElement('div');
+        div.classList.add('movimiento');
+        div.classList.add(mov.tipo === 'ingreso' ? 'ingreso' : 'gasto');
+        div.innerHTML = `
+          <p><strong>${mov.descripcion}</strong></p>
+          <p>${mov.tipo === 'ingreso' ? '+' : '-'} $${mov.cantidad.toFixed(2)}</p>
+        `;
+        lista.appendChild(div);
+
+        saldo += mov.tipo === 'ingreso' ? mov.cantidad : -mov.cantidad;
+      });
+
+      saldoEl.textContent = `$${saldo.toFixed(2)}`;
+    }
+  </script>
+
+</body>
+</html>
